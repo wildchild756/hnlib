@@ -3,3 +3,4 @@
 !extensions/**
 !scripts/
 !scripts/**
+*.pyc
