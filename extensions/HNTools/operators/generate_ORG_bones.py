@@ -7,6 +7,24 @@ class GenerateORGBonesOperator(bpy.types.Operator):
 
     org_bone_collection_name: bpy.props.StringProperty(name = "ORG Bone Collection Name", default = "ORG")
 
+    @classmethod
+    def poll(cls, context):
+        '''Check if the operator can be called'''
+        poll = context.active_object is not None \
+            and context.active_object.type == 'ARMATURE'\
+            and context.active_object.mode == 'POSE' \
+            and len(context.selected_pose_bones) > 0
+        
+        has_def_pose_bones = False
+        if(len(context.selected_pose_bones)) > 0:
+            for bone in context.selected_pose_bones:
+                if bone.name.startswith('DEF_'):
+                    has_def_pose_bones = True
+                    break
+
+        return poll and has_def_pose_bones
+
+
     def add_constraint(self, context, def_pose_bone, org_pose_bone):
         '''Add a copy transform constraint to the bone'''
         if org_pose_bone is not None:
